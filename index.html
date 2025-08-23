@@ -1,1 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profesor Pituto – Consultas de Cultura General</title>
+  <meta name="description" content="Resuelve tus dudas de cultura general con el Profesor Pituto. Respuestas claras, curiosidades y aprendizaje divertido." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1020;          /* Fondo principal */
+      --bg-2:#0f1530;        /* Fondo secundario */
+      --fg:#eaf0ff;          /* Texto principal */
+      --muted:#a6b2d9;       /* Texto secundario */
+      --brand:#7c4dff;       /* Acento morado */
+      --brand-2:#00e5ff;     /* Acento cian */
+      --ok:#00d68f;          /* Verde éxito */
+      --warn:#ffd166;        /* Amarillo */
+      --danger:#ff5d73;      /* Rojo */
+      --glass:rgba(255,255,255,.06);
+      --card:rgba(255,255,255,.08);
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;
+      color:var(--fg); background: radial-gradient(1200px 800px at 10% 0%, #12183a 10%, transparent 40%),
+                         radial-gradient(1000px 700px at 90% 10%, #0d1930 10%, transparent 35%),
+                         linear-gradient(180deg, var(--bg) 0%, #060a18 100%);
+      overflow-x:hidden;
+    }
+    /* Glow orbs */
+    .orb{position:fixed; inset:auto; pointer-events:none; filter:blur(60px); opacity:.5; z-index:-1}
+    .orb--1{width:600px; height:600px; background:radial-gradient(circle at 30% 30%, var(--brand), transparent 60%); top:-120px; left:-120px}
+    .orb--2{width:700px; height:700px; background:radial-gradient(circle at 60% 40%, var(--brand-2), transparent 60%); bottom:-160px; right:-120px}
 
+    header{
+      position:sticky; top:0; z-index:50; backdrop-filter:saturate(140%) blur(8px);
+      background:linear-gradient(180deg, rgba(11,16,32,.75), rgba(11,16,32,.35));
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .wrap{max-width:1100px; margin:0 auto; padding:0 20px}
+    .nav{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0}
+    .brand{display:flex; align-items:center; gap:12px; text-decoration:none}
+    .logo{width:42px; height:42px; display:grid; place-items:center; border-radius:12px; background:conic-gradient(from 120deg, var(--brand), var(--brand-2)); box-shadow:0 6px 18px rgba(124,77,255,.35)}
+    .logo span{font:700 22px "Fira Code", monospace; color:#0b1020}
+    .brand h1{font-size:18px; margin:0}
+    .brand small{display:block; font-weight:400; color:var(--muted); margin-top:-2px}
+    .nav a.btn{padding:10px 16px; border-radius:12px; text-decoration:none; color:var(--fg); border:1px solid rgba(255,255,255,.15)}  
+
+    .hero{padding:64px 0 36px}
+    .hero .grid{display:grid; grid-template-columns:1.2fr .8fr; gap:24px; align-items:center}
+    .kicker{display:inline-flex; align-items:center; gap:10px; padding:6px 12px; border-radius:999px; background:var(--glass); border:1px solid rgba(255,255,255,.08); font-size:12px; color:var(--muted)}
+    .title{font-size:clamp(28px, 4vw, 48px); line-height:1.05; margin:16px 0 10px}
+    .lead{font-size:clamp(15px, 1.3vw, 18px); color:var(--muted); margin:0 0 18px}
+    .search{display:flex; align-items:center; gap:10px; padding:10px; background:var(--card); border:1px solid rgba(255,255,255,.10); border-radius:var(--radius); box-shadow:var(--shadow)}
+    .search input{flex:1; background:transparent; border:none; outline:none; color:var(--fg); font:400 16px Poppins}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+    .chip{padding:6px 10px; border-radius:999px; background:linear-gradient(90deg, rgba(124,77,255,.18), rgba(0,229,255,.18)); border:1px solid rgba(255,255,255,.14); font-size:12px}
+
+    .hero-card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow)}
+    .hero-card h3{margin:0 0 10px}
+    .hero-card p{margin:0; color:var(--muted)}
+
+    /* Sección de respuestas */
+    section{padding:34px 0}
+    .section-title{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:16px}
+    .section-title h2{margin:0; font-size:26px}
+    .grid-cards{display:grid; grid-template-columns:repeat(3, 1fr); gap:16px}
+    .card{background:var(--card); border:1px solid rgba(255,255,255,.10); border-radius:var(--radius); padding:16px; position:relative; overflow:hidden}
+    .card::after{content:""; position:absolute; inset:auto -40% -40% auto; width:180px; height:180px; background:radial-gradient(circle, rgba(124,77,255,.35), transparent 60%)}
+
+    details{background:rgba(255,255,255,.03); border:1px dashed rgba(255,255,255,.18); padding:12px 14px; border-radius:14px}
+    details+details{margin-top:10px}
+    summary{cursor:pointer; list-style:none}
+    summary::-webkit-details-marker{display:none}
+    summary b{color:#fff}
+    .badge{display:inline-flex; align-items:center; gap:8px; padding:4px 8px; font-size:12px; border-radius:999px; background:rgba(0,214,143,.12); border:1px solid rgba(0,214,143,.3)}
+
+    /* CTA */
+    .cta{display:grid; grid-template-columns:1.2fr .8fr; gap:18px; align-items:center; background:linear-gradient(90deg, rgba(124,77,255,.25), rgba(0,229,255,.25)); border:1px solid rgba(255,255,255,.14); padding:18px; border-radius:var(--radius)}
+    .cta p{margin:0; color:#fff}
+
+    /* Formulario */
+    form{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    label{font-size:12px; color:var(--muted)}
+    input[type="text"], input[type="email"], textarea, select{
+      width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); color:var(--fg); outline:none;
+    }
+    textarea{min-height:110px; resize:vertical}
+    .full{grid-column:1 / -1}
+    .actions{display:flex; gap:10px; align-items:center}
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:var(--glass); color:var(--fg); text-decoration:none; cursor:pointer}
+    .btn--primary{background:linear-gradient(90deg, var(--brand), var(--brand-2)); border:none}
+
+    footer{padding:26px 0 40px; color:var(--muted)}
+    footer .grid{display:grid; grid-template-columns:2fr 1fr; gap:16px}
+    .mono{font-family:"Fira Code", monospace; font-size:12px}
+
+    /* Responsivo */
+    @media (max-width: 920px){
+      .hero .grid, .cta, footer .grid{grid-template-columns:1fr}
+      .grid-cards{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width: 620px){
+      .grid-cards{grid-template-columns:1fr}
+      .nav a.btn{display:none}
+    }
+
+    /* Micro-interacciones */
+    .btn, summary{transition:transform .12s ease, box-shadow .2s ease, opacity .2s ease}
+    .btn:hover{transform:translateY(-1px); box-shadow:0 10px 24px rgba(0,229,255,.18)}
+    .card:hover{transform:translateY(-2px)}
+  </style>
+</head>
+<body>
+  <div class="orb orb--1"></div>
+  <div class="orb orb--2"></div>
+
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#inicio" aria-label="Inicio – Profesor Pituto">
+        <span class="logo" aria-hidden="true"><span>Π</span></span>
+        <div>
+          <h1>Profesor Pituto</h1>
+          <small>Consultas de Cultura General</small>
+        </div>
+      </a>
+
+    </div>
+  </header>
+
+  <main class="wrap" id="inicio" role="main">
+    <section class="hero" aria-label="Bienvenida">
+      <div class="grid">
+        <div>
+          <span class="kicker"><span>🧠</span> Aprender nunca fue tan entretenido</span>
+          <h2 class="title">Resuelve tus dudas con el <em>Profesor Pituto</em>.</h2>
+          <p class="lead">Historia, ciencia, arte, geografía, tecnología y más. Respuestas claras y verificadas con un toque de humor académico.</p>
+
+          <div class="search" role="search" aria-label="Buscar temas">
+            <input type="text" placeholder="Buscar: ¿Qué es un agujero negro? ¿Quién pintó La noche estrellada?…" aria-label="Buscar" />
+            <a class="btn btn--primary" href="#respuestas" aria-label="Ir a respuestas">Buscar</a>
+          </div>
+          <div class="chips" aria-hidden="true">
+            <span class="chip">Historia</span>
+            <span class="chip">Ciencia</span>
+            <span class="chip">Arte</span>
+            <span class="chip">Geografía</span>
+            <span class="chip">Tecnología</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h3>Consejo del día ✍️</h3>
+          <p>Cuando dudes, define términos. La mitad de los debates se resuelven alineando definiciones. —Profesor Pituto</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="respuestas" aria-label="Respuestas destacadas">
+      <div class="section-title">
+        <h2>Respuestas del Profesor</h2>
+        <span class="badge">● verificado por fuentes fiables</span>
+      </div>
+      <div class="grid-cards">
+        <article class="card" aria-labelledby="q1">
+          <h3 id="q1">¿Qué es un agujero negro?</h3>
+          <p class="mono">Ciencia · Astrofísica</p>
+          <details open>
+            <summary><b>Respuesta breve</b></summary>
+            <p>Es una región del espacio con gravedad tan intensa que nada puede escapar, ni siquiera la luz. Se forma cuando una estrella masiva colapsa.</p>
+          </details>
+          <details>
+            <summary><b>Dato curioso</b></summary>
+            <p>El borde se llama <em>horizonte de eventos</em>. Si lo cruzas, no hay regreso; salvo que seas información teórica con buen abogado.</p>
+          </details>
+        </article>
+
+        <article class="card" aria-labelledby="q2">
+          <h3 id="q2">¿Quién pintó <em>La noche estrellada</em>?</h3>
+          <p class="mono">Arte · Pintura</p>
+          <details open>
+            <summary><b>Respuesta breve</b></summary>
+            <p>Vincent van Gogh, en 1889, durante su estancia en Saint‑Rémy‑de‑Provence.</p>
+          </details>
+          <details>
+            <summary><b>Para impresionar en la cena</b></summary>
+            <p>Las espirales del cielo han sido estudiadas por físicos como ejemplo de turbulencia: ¡arte y ciencia tomados de la mano!</p>
+          </details>
+        </article>
+
+        <article class="card" aria-labelledby="q3">
+          <h3 id="q3">¿Cuál es el río más largo del mundo?</h3>
+          <p class="mono">Geografía</p>
+          <details open>
+            <summary><b>Respuesta breve</b></summary>
+            <p>Hay debate: tradicionalmente el Nilo (~6.650 km) y el Amazonas (que podría superarlo según mediciones recientes). El Profesor Pituto sugiere: ¡no discutan, visiten ambos!</p>
+          </details>
+          <details>
+            <summary><b>¿Por qué hay debate?</b></summary>
+            <p>Depende del punto de inicio y medición de afluentes. La ciencia geográfica también tiene sus novelas.</p>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <section aria-label="Cómo funciona">
+      <div class="section-title">
+        <h2>¿Cómo funciona?</h2>
+      </div>
+      <div class="grid-cards">
+        <div class="card">
+          <h3>1) Pregunta</h3>
+          <p>Formula tu duda con el mayor contexto posible. Si tienes una fuente, compártela.</p>
+        </div>
+        <div class="card">
+          <h3>2) Verificamos</h3>
+          <p>Consultamos libros, enciclopedias y bases de conocimiento. Priorizamos fuentes académicas.</p>
+        </div>
+        <div class="card">
+          <h3>3) Respondemos</h3>
+          <p>Recibes una explicación clara, breve y con sugerencias para seguir aprendiendo.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="wrap grid">
+      <p>© <span id="year"></span> Profesor Pituto. Aprender con estilo.
+        <br><span class="mono">Hecho con HTML + CSS</span></p>
+      <p style="text-align:right">Síguenos en: <a class="btn" href="https://intico.ai/opencx/channelty/" target="_blank" aria-label="intico">IntiCo</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Solo para año dinámico (sin librerías)
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+ <!-- Chatbot N8N -->
+<link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+<script type="module">
+	import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+	createChat({
+        webhookUrl: 'https://n8n-dev.inticousa.com/webhook/c99c8e5f-a87a-45f5-814d-347c77b81c83/chat', //URL de la webhook de N8N que recibe los mensajes de la web
+        webhookConfig: {
+            method: 'POST',
+            headers: {}
+        },
+        target: '#n8n-chat',
+        mode: 'window',
+        chatInputKey: 'chatInput',
+        chatSessionKey: 'sessionId',
+        loadPreviousSession: true,
+        metadata: {},
+        showWelcomeScreen: false,
+        defaultLanguage: 'en',
+        initialMessages: [
+            '¡Cordial saludo! 👋',
+            'Es un gusto tenerte hoy a aqui'
+        ],
+        i18n: {
+            en: {
+                title: '¡Hola! 👋',
+                subtitle: "¡Bienvenido/a! Estamos disponibles las 24/7.",
+                footer: '',
+                getStarted: 'Nueva Conversación',
+                inputPlaceholder: 'Escribe tu pregunta...',
+            },
+        },
+        enableStreaming: false,
+    });
+</script>
+</body>
+</html>
